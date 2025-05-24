@@ -1,7 +1,6 @@
-package algorithm
+package wavesort
 
 import (
-	"log"
 	"math/rand/v2"
 	"testing"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func Test_partition(t *testing.T) {
-	s := seq{3, 1, 4, 1, 5, 9, 2, 6}
+	s := Sequence{3, 1, 4, 1, 5, 9, 2, 6}
 	got := s.partition(0, len(s)-1, len(s)-1)
 	want := 6
 	if got != want {
@@ -20,18 +19,18 @@ func Test_partition(t *testing.T) {
 func Test_blockSwap_1(t *testing.T) {
 	ts := []struct {
 		name    string
-		input   seq
-		want    seq
+		input   Sequence
+		want    Sequence
 		m, r, p int
 	}{
 		{
-			input: seq{5, 6, 7, 1, 2, 3, 4},
-			want:  seq{1, 2, 3, 4, 5, 6, 7},
+			input: Sequence{5, 6, 7, 1, 2, 3, 4},
+			want:  Sequence{1, 2, 3, 4, 5, 6, 7},
 			m:     0,
 			r:     3,
 			p:     6,
 		},
-		{"empty", seq{1}, seq{1}, 0, 0, 0},
+		{"empty", Sequence{1}, Sequence{1}, 0, 0, 0},
 	}
 	for _, tc := range ts {
 		tc := tc
@@ -46,21 +45,21 @@ func Test_blockSwap_1(t *testing.T) {
 }
 
 func Test_blockSwap(t *testing.T) {
-	s := seq{3, 1, 4, 1, 5, 9, 2, 6}
+	s := Sequence{3, 1, 4, 1, 5, 9, 2, 6}
 	s.blockSwap(0, 4, 7)
-	want := seq{5, 9, 2, 6, 3, 1, 4, 1}
+	want := Sequence{5, 9, 2, 6, 3, 1, 4, 1}
 	if diff := cmp.Diff(want, s); diff != "" {
 		t.Errorf("blockSwap() = %v, want %v", s, want)
 	}
 }
 func TestWaveSort(t *testing.T) {
 	tests := []struct {
-		input seq
-		want  seq
+		input Sequence
+		want  Sequence
 	}{
-		{seq{3, 1, 4, 1, 5, 9, 2, 6, 7}, seq{1, 1, 2, 3, 4, 5, 6, 7, 9}},
-		{seq{1}, seq{1}},
-		{seq{}, seq{}},
+		{Sequence{3, 1, 4, 1, 5, 9, 2, 6, 7}, Sequence{1, 1, 2, 3, 4, 5, 6, 7, 9}},
+		{Sequence{1}, Sequence{1}},
+		{Sequence{}, Sequence{}},
 	}
 
 	for _, test := range tests {
@@ -74,42 +73,31 @@ func TestWaveSort(t *testing.T) {
 func TestWaveSort_LongSeq(t *testing.T) {
 	const testRun = 1
 	seqLength := 1 << 20
-	input := make(seq, seqLength)
+	input := make(Sequence, seqLength)
 	for i := range seqLength {
 		input[i] = i
 	}
-	sumCmp, sumSwap, sumBs := 0, 0, 0
 	for range testRun {
 		rand.Shuffle(seqLength, input.swap)
 		// input.reverse(0, seqLength-1)
-		compare, swap, bs = 0, 0, 0
+		Comparisons, Swaps, BlockSwaps = 0, 0, 0
 		input.WaveSort()
-		sumCmp += compare
-		sumSwap += swap
-		sumBs += bs
 	}
-	sumCmp /= testRun
-	sumSwap /= testRun
-	sumBs /= testRun
 	for i := range seqLength {
 		if input[i] != i {
 			t.Errorf("WaveSort() = %v, want %v", input[i], i)
 		}
 	}
-	log.Printf("\nnumber of comparisons: %d\n", sumCmp)
-	log.Printf("number of swaps: %d\n", sumSwap)
-	log.Printf("number of block swaps: %d\n", sumBs)
-
 }
 
 func TestWaveSort_e(t *testing.T) {
 	tests := []struct {
-		input seq
-		want  seq
+		input Sequence
+		want  Sequence
 	}{
-		{seq{3, 1, 4, 1, 5, 9, 2, 6, 7}, seq{1, 1, 2, 3, 4, 5, 6, 7, 9}},
-		{seq{1}, seq{1}},
-		{seq{}, seq{}},
+		{Sequence{3, 1, 4, 1, 5, 9, 2, 6, 7}, Sequence{1, 1, 2, 3, 4, 5, 6, 7, 9}},
+		{Sequence{1}, Sequence{1}},
+		{Sequence{}, Sequence{}},
 	}
 
 	for _, test := range tests {
@@ -123,92 +111,79 @@ func TestWaveSort_e(t *testing.T) {
 func TestWaveSort_e_LongSeq(t *testing.T) {
 	const testRun = 1
 	seqLength := 1 << 20
-	input := make(seq, seqLength)
+	input := make(Sequence, seqLength)
 	for i := range seqLength {
 		input[i] = i
 	}
-	sumCmp, sumSwap, sumBs := 0, 0, 0
 	for range testRun {
 		rand.Shuffle(seqLength, input.swap)
 		// input.reverse(0, seqLength-1)
-		compare, swap, bs = 0, 0, 0
+		Comparisons, Swaps, BlockSwaps = 0, 0, 0
 		input.WaveSort_e()
-		sumCmp += compare
-		sumSwap += swap
-		sumBs += bs
 	}
-	sumCmp /= testRun
-	sumSwap /= testRun
-	sumBs /= testRun
 	for i := range seqLength {
 		if input[i] != i {
 			t.Errorf("WaveSort() = %v, want %v", input[i], i)
 		}
 	}
-	log.Printf("\nnumber of comparisons: %d\n", sumCmp)
-	log.Printf("number of swaps: %d\n", sumSwap)
-	log.Printf("number of block swaps: %d\n", sumBs)
 }
+
 func Test_waveInsertSort(t *testing.T) {
 	seqLength := 1 << 4
-	input := make(seq, seqLength)
+	input := make(Sequence, seqLength)
 	for i := range seqLength {
 		input[i] = i
 	}
 	rand.Shuffle(seqLength, input.swap)
-	compare, swap, bs = 0, 0, 0
 	input.insertSort(0, seqLength-1)
 	for i := range seqLength {
 		if input[i] != i {
 			t.Errorf("WaveSort() = %v, want %v", input[i], i)
 		}
 	}
-	log.Printf("\nnumber of comparisons: %d\n", compare)
-	log.Printf("number of swaps: %d\n", swap)
-	log.Printf("number of block swaps: %d\n", bs)
 }
 
 func Test_preSorted(t *testing.T) {
 	tcs := []struct {
 		name   string
-		input  seq
-		output seq
+		input  Sequence
+		output Sequence
 		start  int
 	}{
 		{
 			name:   "sorted",
-			input:  seq{1, 2, 3, 4, 5},
-			output: seq{1, 2, 3, 4, 5},
+			input:  Sequence{1, 2, 3, 4, 5},
+			output: Sequence{1, 2, 3, 4, 5},
 			start:  0,
 		},
 		{
 			name:   "reversed",
-			input:  seq{5, 4, 3, 2, 1},
-			output: seq{1, 2, 3, 4, 5},
+			input:  Sequence{5, 4, 3, 2, 1},
+			output: Sequence{1, 2, 3, 4, 5},
 			start:  0,
 		},
 		{
 			name:   "partial sorted",
-			input:  seq{3, 1, 2, 4, 5},
-			output: seq{3, 1, 2, 4, 5},
+			input:  Sequence{3, 1, 2, 4, 5},
+			output: Sequence{3, 1, 2, 4, 5},
 			start:  1,
 		},
 		{
 			name:   "partial reversed",
-			input:  seq{3, 1, 2, 5, 4},
-			output: seq{3, 1, 2, 4, 5},
+			input:  Sequence{3, 1, 2, 5, 4},
+			output: Sequence{3, 1, 2, 4, 5},
 			start:  3,
 		},
 		{
 			name:   "empty",
-			input:  seq{},
-			output: seq{},
+			input:  Sequence{},
+			output: Sequence{},
 			start:  0,
 		},
 		{
 			name:   "one element",
-			input:  seq{1},
-			output: seq{1},
+			input:  Sequence{1},
+			output: Sequence{1},
 			start:  0,
 		},
 	}
