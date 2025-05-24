@@ -8,7 +8,7 @@ import (
 
 type Nums []int
 
-var Comparisons, Swaps, BlockSwaps int
+var Comparisons, Swaps int
 
 func (nms Nums) InsertSort() {
 	ln := len(nms)
