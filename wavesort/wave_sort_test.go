@@ -36,7 +36,7 @@ func Test_blockSwap_1(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			tc.input.blockSwap_e(tc.m, tc.r, tc.p)
+			tc.input.blockSwap(tc.m, tc.r, tc.p)
 			if diff := cmp.Diff(tc.want, tc.input); diff != "" {
 				t.Errorf("blockSwap_1() failed with diff %v", diff)
 			}
@@ -47,7 +47,7 @@ func Test_blockSwap_1(t *testing.T) {
 func Test_blockSwap(t *testing.T) {
 	s := Sequence{3, 1, 4, 1, 5, 9, 2, 6}
 	s.blockSwap(0, 4, 7)
-	want := Sequence{5, 9, 2, 6, 3, 1, 4, 1}
+	want := Sequence{5, 9, 2, 6, 1, 4, 1, 3}
 	if diff := cmp.Diff(want, s); diff != "" {
 		t.Errorf("blockSwap() = %v, want %v", s, want)
 	}

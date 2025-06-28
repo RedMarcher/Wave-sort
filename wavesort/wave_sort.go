@@ -51,42 +51,6 @@ func (s Sequence) blockSwap(m, r, p int) {
 	if ll == 0 {
 		return
 	}
-	l := p - m + 1
-	BlockSwaps += l // count block swapped elements
-	tmp := s[m]
-	init := m
-	j := m
-	nm := p - ll + 1
-	k := j
-	for range l {
-		if j >= nm {
-			k = j - nm + m
-			if k == init {
-				init++
-				s[j] = tmp
-				j = init
-				tmp = s[j]
-				continue
-			}
-			s[j] = s[k]
-			j = k
-			continue
-		}
-		k = j + ll
-		s[j] = s[k]
-		j = k
-	}
-}
-
-// blockSwap_e swaps the block from m to r and the one from r to p.
-// m is the index of the first element of the left block.
-// r is the index of the right bound of the left block and the first element of the right block.
-// p is the index of the last element of the right block.
-func (s Sequence) blockSwap_e(m, r, p int) {
-	ll := r - m
-	if ll == 0 {
-		return
-	}
 
 	lr := p - r + 1
 
@@ -163,7 +127,7 @@ func (s Sequence) downwave(start, sortedStart, end int) {
 		s.downwave(start, sortedStart, p-1)
 		return
 	}
-	s.blockSwap_e(m, sortedStart, p)
+	s.blockSwap(m, sortedStart, p)
 	if m == start {
 		if p == sortedStart {
 			s.upwave(m+1, end)
@@ -259,7 +223,7 @@ func (s Sequence) downwave_e(start, sortedStart, end int) {
 		s.downwave_e(start, sortedStart, p-1)
 		return
 	}
-	s.blockSwap_e(m, sortedStart, p)
+	s.blockSwap(m, sortedStart, p)
 	if m == start {
 		if p == sortedStart {
 			s.upwave_e(m+1, end)
