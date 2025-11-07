@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "wave-sort",
+    srcs = ["wave_sort.go"],
+    importpath = "codelab/go/dsal/leetcode/wave-sort",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "wave-sort_test",
+    srcs = ["wave_sort_test.go"],
+    embed = [":wave-sort"],
+    deps = ["@com_github_google_go_cmp//cmp"],
+)

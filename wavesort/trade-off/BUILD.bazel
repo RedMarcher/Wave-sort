@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "trade-off",
+    srcs = ["wave_sort.go"],
+    importpath = "codelab/go/dsal/leetcode/trade-off",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "trade-off_test",
+    srcs = ["wave_sort_test.go"],
+    embed = [":trade-off"],
+    deps = ["@com_github_google_go_cmp//cmp"],
+)
